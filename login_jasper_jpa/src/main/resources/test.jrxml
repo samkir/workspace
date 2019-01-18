@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report10" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.1000000000000032"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/home/audaxis/ireportpdf/"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="c_invoice_id" class="java.lang.String"/>
+	<parameter name="c_bpartner_id" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT c.name AS clientname,
+  o.name      AS orgname,
+  b.name      AS fournisseur,
+  b1.name as client,
+  i.DATEINVOICED,
+  l.ADDRESS1,
+  l.CITY,
+  documentno,
+  u.EMAIL,
+  u.PHONE,
+  d.name AS doctype,
+i.c_order_id,
+  i.C_INVOICE_ID,
+
+  il.line,
+  p.name AS product_name,
+  il.qtyinvoiced as qty,
+  il.PRICEACTUAL,
+  il.TAXAMT,
+  il.LINETOTALAMT,
+  il.LINENETAMT,
+  t.rate,
+  pc.name as productCat,
+  il.C_INVOICE_ID,
+  i.GRANDTOTAL,
+ g.greeting,
+  u.name as client_name
+FROM c_invoice i
+INNER JOIN ad_client c
+ON c.ad_client_id = i.ad_client_id
+INNER JOIN ad_org o
+ON o.ad_org_id = i.ad_org_id
+INNER JOIN c_bpartner b ON b.c_bpartner_id =i.c_bpartner_id
+INNER JOIN C_BPARTNER_LOCATION bl ON b.C_BPARTNER_ID = bl.C_BPARTNER_ID
+INNER JOIN ad_user u ON u.C_BPARTNER_ID=b.C_BPARTNER_ID and u.EMAIL is not null
+inner join C_GREETING g on u.C_GREETING_ID=g.C_GREETING_ID
+INNER JOIN C_DOCTYPE d ON d.C_DOCTYPE_ID= i.C_DOCTYPE_ID
+inner join c_location l on bl.C_LOCATION_id = l.C_LOCATION_id
+inner join C_BPARTNER_LOCATION bl1 on i.C_BPARTNER_LOCATION_ID=bl1.C_BPARTNER_LOCATION_ID
+inner join C_BPARTNER b1 on bl1.C_BPARTNER_ID=b1.C_BPARTNER_ID
+inner join C_INVOICELINE il on il.C_INVOICE_id = i.C_INVOICE_ID
+inner join c_tax t on t.C_TAX_ID=il.C_TAX_ID
+INNER JOIN M_PRODUCT p ON p.M_PRODUCT_ID=il.M_PRODUCT_ID
+inner join M_PRODUCT_CATEGORY pc on pc.M_PRODUCT_CATEGORY_ID=p.M_PRODUCT_CATEGORY_ID
+where i.c_invoice_id =$P{c_invoice_id} or b.C_BPARTNER_ID=$P{c_bpartner_id}
+order by  documentno,pc.name,il.line]]>
+	</queryString>
+	<field name="CLIENTNAME" class="java.lang.String"/>
+	<field name="ORGNAME" class="java.lang.String"/>
+	<field name="FOURNISSEUR" class="java.lang.String"/>
+	<field name="CLIENT" class="java.lang.String"/>
+	<field name="DATEINVOICED" class="java.sql.Timestamp"/>
+	<field name="ADDRESS1" class="java.lang.String"/>
+	<field name="CITY" class="java.lang.String"/>
+	<field name="DOCUMENTNO" class="java.lang.String"/>
+	<field name="EMAIL" class="java.lang.String"/>
+	<field name="PHONE" class="java.lang.String"/>
+	<field name="DOCTYPE" class="java.lang.String"/>
+	<field name="C_ORDER_ID" class="java.math.BigDecimal"/>
+	<field name="C_INVOICE_ID" class="java.math.BigDecimal"/>
+	<field name="LINE" class="java.math.BigDecimal"/>
+	<field name="PRODUCT_NAME" class="java.lang.String"/>
+	<field name="QTY" class="java.math.BigDecimal"/>
+	<field name="PRICEACTUAL" class="java.math.BigDecimal"/>
+	<field name="TAXAMT" class="java.math.BigDecimal"/>
+	<field name="LINETOTALAMT" class="java.math.BigDecimal"/>
+	<field name="LINENETAMT" class="java.math.BigDecimal"/>
+	<field name="RATE" class="java.math.BigDecimal"/>
+	<field name="PRODUCTCAT" class="java.lang.String"/>
+	<field name="GRANDTOTAL" class="java.math.BigDecimal"/>
+	<field name="GREETING" class="java.lang.String"/>
+	<field name="CLIENT_NAME" class="java.lang.String"/>
+	<variable name="totc" class="java.math.BigDecimal" resetType="Group" resetGroup="catot" calculation="Sum">
+		<variableExpression><![CDATA[$F{LINETOTALAMT}]]></variableExpression>
+	</variable>
+	<variable name="globalall" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{LINETOTALAMT}]]></variableExpression>
+	</variable>
+	<variable name="totfac" class="java.math.BigDecimal" resetType="Group" resetGroup="test" calculation="Sum">
+		<variableExpression><![CDATA[$V{totc}]]></variableExpression>
+	</variable>
+	<group name="test">
+		<groupExpression><![CDATA[$F{DOCUMENTNO}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement x="100" y="0" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{DOCUMENTNO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="100" height="20"/>
+					<textElement/>
+					<text><![CDATA[Numero de facture]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="19" width="189" height="1"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<staticText>
+					<reportElement x="254" y="0" width="100" height="20"/>
+					<textElement/>
+					<text><![CDATA[Numero de facture]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="354" y="0" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{DOCUMENTNO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="454" y="0" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{GRANDTOTAL}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="254" y="19" width="300" height="1"/>
+				</line>
+				<line>
+					<reportElement x="253" y="0" width="300" height="1"/>
+				</line>
+				<line>
+					<reportElement x="253" y="0" width="1" height="20"/>
+				</line>
+				<line>
+					<reportElement x="553" y="0" width="1" height="20"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="catot">
+		<groupExpression><![CDATA[$F{PRODUCTCAT}]]></groupExpression>
+		<groupFooter>
+			<band height="20">
+				<textField>
+					<reportElement x="455" y="0" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{totc}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="255" y="0" width="100" height="20"/>
+					<textElement/>
+					<text><![CDATA[total for category]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="354" y="0" width="101" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{PRODUCTCAT}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="223" splitType="Stretch">
+			<staticText>
+				<reportElement x="319" y="10" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Societe]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="319" y="30" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Organisation]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="419" y="10" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{CLIENTNAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="419" y="30" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ORGNAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="123" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Client]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="142" y="123" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{FOURNISSEUR}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="143" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Mail]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="138" y="143" width="173" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{EMAIL}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="163" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Telephone]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="140" y="163" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{PHONE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="183" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Adress]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="140" y="183" width="171" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ADDRESS1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="121" y="61" width="181" height="36"/>
+				<textElement>
+					<font size="18"/>
+				</textElement>
+				<text><![CDATA[Type de document: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="302" y="61" width="159" height="36"/>
+				<textElement>
+					<font size="18"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DOCTYPE}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="121" y="86" width="297" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="40" y="103" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Nom client]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="143" y="103" width="69" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{GREETING}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="212" y="103" width="146" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{CLIENT_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="339" y="123" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[date facture]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="439" y="123" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DATEINVOICED}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="439" y="143" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{C_ORDER_ID}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="339" y="143" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Numero d'order]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="203" width="67" height="20"/>
+				<textElement/>
+				<text><![CDATA[TotalNet]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="222" y="203" width="49" height="20"/>
+				<textElement/>
+				<text><![CDATA[prix]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="203" width="76" height="20"/>
+				<textElement/>
+				<text><![CDATA[Produit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="3" y="203" width="42" height="20"/>
+				<textElement/>
+				<text><![CDATA[N:ligne]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="203" width="63" height="20"/>
+				<textElement/>
+				<text><![CDATA[TotalTax]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="397" y="203" width="43" height="20"/>
+				<textElement/>
+				<text><![CDATA[TAX %]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="500" y="203" width="55" height="20"/>
+				<textElement/>
+				<text><![CDATA[TotalLine]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="271" y="203" width="59" height="20"/>
+				<textElement/>
+				<text><![CDATA[QTY]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="121" y="203" width="101" height="20"/>
+				<textElement/>
+				<text><![CDATA[categorie]]></text>
+			</staticText>
+			<line>
+				<reportElement x="3" y="222" width="550" height="1"/>
+			</line>
+		</band>
+	</title>
+	<detail>
+		<band height="21">
+			<textField>
+				<reportElement x="3" y="1" width="42" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{LINE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="121" y="1" width="101" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{PRODUCTCAT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="222" y="1" width="49" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{PRICEACTUAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="271" y="1" width="59" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{QTY}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="397" y="1" width="43" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="437" y="1" width="63" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TAXAMT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="500" y="1" width="55" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{LINETOTALAMT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="45" y="1" width="76" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{PRODUCT_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="330" y="1" width="67" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{LINENETAMT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="780">
+			<staticText>
+				<reportElement x="319" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Global total]]></text>
+			</staticText>
+			<textField evaluationTime="Report" pattern="">
+				<reportElement x="419" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{globalall}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+</jasperReport>

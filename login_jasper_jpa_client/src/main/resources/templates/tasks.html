@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Raleway:400,300,600" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/4.0.0/normalize.min.css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" />
+  <title>admin page</title>
+</head>
+<body>
+  <div class="container">
+    <h1>all users</h1>
+    <div class="row" th:each="admin : ${admin}">
+      <div class="nine columns">
+        <form th:method="put" th:action="@{/}">
+          <input type="text" name="id" th:value="${admin.userId}" />
+          <input type="hidden" name="User Name" th:value="${admin.userName}" />
+          <input type="text" name="password" th:value="${admin.encrytedPassword}" />
+          <input type="checkbox" name="enabled" th:checked="${admin.enabled}" onchange="form.submit()" />
+          <span th:text="${admin.userName}"></span>
+        </form>
+      </div>
+      <div class="three columns">
+        <form th:method="delete" th:action="@{/}">
+          <input type="hidden" name="id" th:value="${admin.userId}" />
+          <button class="button u-full-width" type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+    <hr />
+    <form method="post" th:action="@{/}" th:object="${newUser}">
+      <div class="row">
+        <div class="nine columns">
+          <input type="text" placeholder="username" class="u-full-width" th:field="*{userName}" />
+          <input type="text" placeholder="encrytedPassword" class="u-full-width" th:field="*{encrytedPassword}" />
+          <span th:if="${error != null}" th:text="${error}"></span>
+        </div>
+        <div class="three columns">
+          <button type="submit" class="button-primary u-full-width">Add</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

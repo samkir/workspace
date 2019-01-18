@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Handling Form Submission</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<!-- Include _menu.html -->
+      <th:block th:include="/_menu"></th:block>
+	
+	<form th:action="@{/jasper}" method="get">
+	<label for="c_invoice_id">c_invoice_id</label>
+  <input type="text" name="c_invoice_id" th:value="${c_invoice_id}" />
+ <label for="c_bpartner_id">c_bpartner_id</label>
+  <input type="text" name="c_bpartner_id" th:value="${c_bpartner_id}" />
+  <button type="submit" >Search</button>
+</form></body>
+</html>
